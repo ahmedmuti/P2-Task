@@ -26,7 +26,7 @@ export class AuthService {
 
   // Current user signal
   currentUser = signal<User | null>(null);
-  
+
   // Check if user is authenticated
   isAuthenticated = signal<boolean>(false);
 
@@ -38,7 +38,7 @@ export class AuthService {
   login(email: string, password: string): Observable<User> {
     // For demo purposes, we're not checking the password
     const user = this.MOCK_USERS.find(u => u.email === email);
-    
+
     if (user) {
       return of(user).pipe(
         delay(800), // Simulate network delay
@@ -50,7 +50,7 @@ export class AuthService {
         })
       );
     }
-    
+
     return throwError(() => new Error('Invalid email or password'));
   }
 
@@ -86,7 +86,7 @@ export class AuthService {
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
     localStorage.removeItem('user');
-    
+
     // Navigate to login page
     this.router.navigate(['/auth/login']);
   }
