@@ -1,0 +1,230 @@
+<div class="container py-5 animate__animated animate__fadeIn">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
+        <div class="card-body p-5">
+          <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+              <h2 class="fw-bold mb-0 text-primary">Add New Beneficiary</h2>
+              <p class="text-muted">Create a new beneficiary profile</p>
+            </div>
+            <a routerLink="/admin/beneficiaries" class="btn btn-outline-secondary rounded-pill px-4">
+              <span class="material-icons me-2">arrow_back</span>
+              Back to List
+            </a>
+          </div>
+          
+          @if (errorMessage) {
+            <div class="alert alert-danger d-flex align-items-center py-3 px-4 rounded-3 shadow-sm" role="alert">
+              <span class="material-icons me-2 text-danger" style="font-size: 1.5rem;">error_outline</span>
+              {{ errorMessage }}
+            </div>
+          }
+          
+          <form [formGroup]="beneficiaryForm" (ngSubmit)="onSubmit()" novalidate>
+            <div class="row g-4">
+              <div class="col-md-6">
+                <label for="name" class="form-label fw-medium">Full Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  formControlName="name"
+                  class="form-control rounded-3"
+                  [ngClass]="{'is-invalid': submitted && f['name'].errors}"
+                  placeholder="Enter full name"
+                />
+                @if (submitted && f['name'].errors) {
+                  <div class="invalid-feedback">
+                    @if (f['name'].errors['required']) {
+                      Full name is required
+                    }
+                  </div>
+                }
+              </div>
+              
+              <div class="col-md-6">
+                <label for="email" class="form-label fw-medium">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  formControlName="email"
+                  class="form-control rounded-3"
+                  [ngClass]="{'is-invalid': submitted && f['email'].errors}"
+                  placeholder="Enter email address"
+                />
+                @if (submitted && f['email'].errors) {
+                  <div class="invalid-feedback">
+                    @if (f['email'].errors['required']) {
+                      Email is required
+                    }
+                    @if (f['email'].errors['email']) {
+                      Please enter a valid email address
+                    }
+                  </div>
+                }
+              </div>
+              
+              <div class="col-md-6">
+                <label for="age" class="form-label fw-medium">Age</label>
+                <input
+                  type="number"
+                  id="age"
+                  formControlName="age"
+                  class="form-control rounded-3"
+                  [ngClass]="{'is-invalid': submitted && f['age'].errors}"
+                  placeholder="Enter age"
+                  min="18"
+                  max="100"
+                />
+                @if (submitted && f['age'].errors) {
+                  <div class="invalid-feedback">
+                    @if (f['age'].errors['required']) {
+                      Age is required
+                    }
+                    @if (f['age'].errors['min'] || f['age'].errors['max']) {
+                      Age must be between 18 and 100
+                    }
+                  </div>
+                }
+              </div>
+              
+              <div class="col-md-6">
+                <label for="gender" class="form-label fw-medium">Gender</label>
+                <select
+                  id="gender"
+                  formControlName="gender"
+                  class="form-select rounded-3"
+                  [ngClass]="{'is-invalid': submitted && f['gender'].errors}"
+                >
+                  <option value="" disabled selected>Select gender</option>
+                  <option [value]="Gender.MALE">Male</option>
+                  <option [value]="Gender.FEMALE">Female</option>
+                  <option [value]="Gender.OTHER">Other</option>
+                </select>
+                @if (submitted && f['gender'].errors) {
+                  <div class="invalid-feedback">
+                    @if (f['gender'].errors['required']) {
+                      Gender is required
+                    }
+                  </div>
+                }
+              </div>
+              
+              <div class="col-md-6">
+                <label for="phone" class="form-label fw-medium">Phone Number</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  formControlName="phone"
+                  class="form-control rounded-3"
+                  [ngClass]="{'is-invalid': submitted && f['phone'].errors}"
+                  placeholder="Enter phone number"
+                />
+                @if (submitted && f['phone'].errors) {
+                  <div class="invalid-feedback">
+                    @if (f['phone'].errors['required']) {
+                      Phone number is required
+                    }
+                  </div>
+                }
+              </div>
+              
+              <div class="col-md-6">
+                <label for="budget" class="form-label fw-medium">Budget</label>
+                <div class="input-group">
+                  <span class="input-group-text rounded-start-3">$</span>
+                  <input
+                    type="number"
+                    id="budget"
+                    formControlName="budget"
+                    class="form-control rounded-end-3"
+                    [ngClass]="{'is-invalid': submitted && f['budget'].errors}"
+                    placeholder="Enter budget amount"
+                    min="0"
+                    step="100"
+                  />
+                  @if (submitted && f['budget'].errors) {
+                    <div class="invalid-feedback">
+                      @if (f['budget'].errors['required']) {
+                        Budget is required
+                      }
+                      @if (f['budget'].errors['min']) {
+                        Budget must be a positive number
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <label for="power" class="form-label fw-medium">Power (1-100)</label>
+                <div class="input-group">
+                  <input
+                    type="number"
+                    id="power"
+                    formControlName="power"
+                    class="form-control rounded-start-3"
+                    [ngClass]="{'is-invalid': submitted && f['power'].errors}"
+                    placeholder="Enter power level"
+                    min="1"
+                    max="100"
+                  />
+                  <span class="input-group-text rounded-end-3">%</span>
+                  @if (submitted && f['power'].errors) {
+                    <div class="invalid-feedback">
+                      @if (f['power'].errors['required']) {
+                        Power is required
+                      }
+                      @if (f['power'].errors['min'] || f['power'].errors['max']) {
+                        Power must be between 1 and 100
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+              
+              <div class="col-12">
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    id="isApproved"
+                    formControlName="isApproved"
+                    class="form-check-input"
+                  />
+                  <label for="isApproved" class="form-check-label">
+                    Approve beneficiary immediately
+                  </label>
+                </div>
+              </div>
+              
+              <div class="col-12 mt-5">
+                <div class="d-grid gap-3 d-md-flex justify-content-md-end">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary rounded-pill px-5 py-2"
+                    routerLink="/admin/beneficiaries"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    class="btn btn-primary rounded-pill px-5 py-2"
+                    [disabled]="loading"
+                  >
+                    @if (loading) {
+                      <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Creating...
+                    } @else {
+                      <span class="material-icons me-2">add</span>
+                      Create Beneficiary
+                    }
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

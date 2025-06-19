@@ -1,0 +1,23 @@
+.avatar-placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  color: #6c757d;
+}
+
+.progress {
+  height: 10px;
+}
+
+.rating-input .material-icons {
+  transition: all 0.2s ease;
+}
+
+.rating-input .material-icons:hover {
+  transform: scale(1.2);
+}

@@ -1,0 +1,203 @@
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-4 mb-4 mb-lg-0">
+      <div class="card shadow-sm">
+        <div class="card-body text-center p-4">
+          <div class="avatar-placeholder mb-3">
+            <span class="material-icons" style="font-size: 4rem;">account_circle</span>
+          </div>
+          <h3 class="fw-bold mb-1">{{ authService.currentUser()?.name }}</h3>
+          <p class="text-muted mb-3">
+            {{ authService.currentUser()?.role }}
+          </p>
+
+          <div class="d-grid gap-2 mt-4">
+            <button class="btn btn-outline-danger" (click)="logout()">
+              <span class="material-icons me-2">logout</span>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-sm mt-4">
+        <div class="card-body p-4">
+          <h5 class="fw-bold mb-3">Account Information</h5>
+
+          <div class="mb-3">
+            <div class="d-flex align-items-center mb-2">
+              <span class="material-icons me-2 text-primary">email</span>
+              <div>
+                <div class="text-muted small">Email</div>
+                <div>{{ authService.currentUser()?.email }}</div>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center">
+              <span class="material-icons me-2 text-primary">badge</span>
+              <div>
+                <div class="text-muted small">User ID</div>
+                <div>{{ authService.currentUser()?.id }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      @if (authService.isAdmin()) {
+      <div class="card shadow-sm mb-4">
+        <div class="card-body p-4">
+          <h4 class="fw-bold mb-3">Admin Dashboard</h4>
+          <p class="text-muted">As an admin, you have access to manage all beneficiaries.</p>
+
+          <div class="d-grid gap-2 d-md-flex">
+            <a routerLink="/admin/beneficiaries" class="btn btn-primary">
+              <span class="material-icons me-2">people</span>
+              Manage Beneficiaries
+            </a>
+            <a routerLink="/admin/beneficiaries/add" class="btn btn-outline-primary">
+              <span class="material-icons me-2">person_add</span>
+              Add New Beneficiary
+            </a>
+          </div>
+        </div>
+      </div>
+      }
+
+      @if (authService.isBeneficiary()) {
+      <div class="card shadow-sm mb-4">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0">My Beneficiary Profile</h4>
+            @if (loading) {
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            }
+          </div>
+
+          @if (error) {
+          <div class="alert alert-warning" role="alert">
+            {{ error }}
+            <p class="mb-0 mt-2">
+              <a routerLink="/beneficiaries" class="alert-link">Browse all beneficiaries</a>
+            </p>
+          </div>
+          } @else {
+          @if (beneficiaryProfile$ | async; as profile) {
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card bg-light">
+                <div class="card-body">
+                  <h6 class="card-subtitle mb-2 text-muted">Budget</h6>
+                  <h4 class="card-title mb-0">${{ profile.budget | number:'1.0-0' }}</h4>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card bg-light">
+                <div class="card-body">
+                  <h6 class="card-subtitle mb-2 text-muted">Power</h6>
+                  <h4 class="card-title mb-0">{{ profile.power }}%</h4>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card bg-light">
+                <div class="card-body">
+                  <h6 class="card-subtitle mb-2 text-muted">Status</h6>
+                  <h4 class="card-title mb-0">
+                    <span class="badge" [ngClass]="profile.isApproved ? 'bg-success' : 'bg-warning'">
+                      {{ profile.isApproved ? 'Approved' : 'Pending Approval' }}
+                    </span>
+                  </h4>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card bg-light">
+                <div class="card-body">
+                  <h6 class="card-subtitle mb-2 text-muted">Average Rating</h6>
+                  <h4 class="card-title mb-0 d-flex align-items-center">
+                    @if (profile.averageRating > 0) {
+                    <span class="material-icons text-warning me-1">star</span>
+                    {{ profile.averageRating | number:'1.1-1' }}
+                    <span class="text-muted ms-1 small">({{ profile.ratings.length }})</span>
+                    } @else {
+                    <span class="text-muted">Not rated yet</span>
+                    }
+                  </h4>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 mt-3">
+              <a [routerLink]="['/beneficiaries', profile.id]" class="btn btn-primary">
+                <span class="material-icons me-2">visibility</span>
+                View Public Profile
+              </a>
+            </div>
+          </div>
+          }
+          }
+        </div>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h4 class="fw-bold mb-3">My Ratings</h4>
+
+          @if (loading) {
+          <div class="d-flex justify-content-center my-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          } @else {
+          @if (beneficiaryProfile$ | async; as profile) {
+          @if (profile.ratings.length === 0) {
+          <div class="text-center py-4">
+            <span class="material-icons d-block mb-3 text-muted" style="font-size: 3rem;">star_border</span>
+            <h5>No ratings yet</h5>
+            <p class="text-muted">Your profile hasn't received any ratings</p>
+          </div>
+          } @else {
+          <div class="list-group">
+            @for (rating of profile.ratings; track rating.id) {
+            <div class="list-group-item">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0">{{ rating.raterName }}</h6>
+                  <small class="text-muted">{{ rating.createdAt | date:'mediumDate' }}</small>
+                </div>
+                <div class="d-flex">
+                  @for (star of [1, 2, 3, 4, 5]; track star) {
+                  <span class="material-icons"
+                    [ngClass]="{'text-warning': star <= rating.value, 'text-muted': star > rating.value}"
+                    style="font-size: 1rem;">
+                    star
+                  </span>
+                  }
+                </div>
+              </div>
+
+              @if (rating.comment) {
+              <p class="mt-2 mb-0">{{ rating.comment }}</p>
+              }
+            </div>
+            }
+          </div>
+          }
+          }
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,120 @@
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h1 class="fw-bold">Beneficiaries</h1>
+            <p class="text-muted">Browse all registered beneficiaries</p>
+        </div>
+        <div class="col-md-6 d-flex justify-content-md-end align-items-center">
+            <a routerLink="/admin/beneficiaries/add" class="btn btn-primary" *ngIf="authService.isAdmin()">
+                <span class="material-icons me-2">add</span>
+                Add New Beneficiary
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <span class="material-icons">search</span>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Search beneficiaries..."
+                            [(ngModel)]="searchTerm" (input)="onSearchChange()" />
+                        <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()"
+                            *ngIf="searchTerm">
+                            <span class="material-icons">close</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-md-end">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-primary"
+                                [ngClass]="{'active': sortField === 'name'}" (click)="sortBy('name')">
+                                Name
+                                <span class="material-icons ms-1 small" *ngIf="sortField === 'name'">
+                                    {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                                </span>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary"
+                                [ngClass]="{'active': sortField === 'budget'}" (click)="sortBy('budget')">
+                                Budget
+                                <span class="material-icons ms-1 small" *ngIf="sortField === 'budget'">
+                                    {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                                </span>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary"
+                                [ngClass]="{'active': sortField === 'power'}" (click)="sortBy('power')">
+                                Power
+                                <span class="material-icons ms-1 small" *ngIf="sortField === 'power'">
+                                    {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center my-5" *ngIf="loading">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!loading">
+        <div class="alert alert-info text-center py-5" role="alert" *ngIf="beneficiaries.length === 0">
+            <span class="material-icons d-block mb-3" style="font-size: 3rem;">search_off</span>
+            <h4>No beneficiaries found</h4>
+            <p class="mb-0">Try adjusting your search criteria</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" *ngIf="beneficiaries.length > 0">
+            <div class="col" *ngFor="let beneficiary of beneficiaries; trackBy: trackById">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0 fw-bold">{{ beneficiary.name }}</h5>
+                            <span class="badge rounded-pill"
+                                [ngClass]="beneficiary.isApproved ? 'bg-success' : 'bg-warning'">
+                                {{ beneficiary.isApproved ? 'Approved' : 'Pending' }}
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Budget:</span>
+                                <span class="fw-bold">${{ beneficiary?.budget }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Power:</span>
+                                <span class="fw-bold">{{ beneficiary.power }}%</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Rating:</span>
+                                <div>
+                                    <span class="material-icons text-warning"
+                                        *ngIf="beneficiary.averageRating > 0">star</span>
+                                    <span class="fw-bold" *ngIf="beneficiary.averageRating > 0">{{
+                                        beneficiary.averageRating }}</span>
+                                    <span class="text-muted" *ngIf="beneficiary.averageRating > 0">({{
+                                        beneficiary.ratings.length }})</span>
+                                    <span class="text-muted" *ngIf="beneficiary.averageRating <= 0">Not rated</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <a [routerLink]="['/beneficiaries', beneficiary.id]" class="btn btn-outline-primary">
+                                View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

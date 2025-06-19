@@ -1,0 +1,30 @@
+.hero {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, #3f51b5 0%, #303f9f 100%);
+}
+
+.hero-image-placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.feature-icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.hover-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.cta {
+  margin-bottom: 3rem;
+}

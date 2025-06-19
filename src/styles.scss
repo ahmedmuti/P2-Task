@@ -1,1 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'bootstrap/scss/bootstrap';
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+}
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    background-color: #3f51b5;
+    border-color: #3f51b5;
+}
+
+.btn-primary:hover {
+    background-color: #303f9f;
+    border-color: #303f9f;
+}
+
+.form-control:focus {
+    border-color: #3f51b5;
+    box-shadow: 0 0 0 0.25rem rgba(63, 81, 181, 0.25);
+}

@@ -1,0 +1,45 @@
+<header class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" routerLink="/">
+      <span class="material-icons me-2">business_center</span>
+      <span>Beneficiary</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" (click)="toggleNavbar()" [attr.aria-expanded]="!isNavbarCollapsed"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" [ngClass]="{'show': !isNavbarCollapsed}" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/beneficiaries" routerLinkActive="active">Beneficiaries</a>
+        </li>
+
+        @if (authService.isAuthenticated()) {
+        @if (authService.isAdmin()) {
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/admin/beneficiaries" routerLinkActive="active">Admin</a>
+        </li>
+        }
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/profile" routerLinkActive="active">Profile</a>
+        </li>
+
+        <li class="nav-item">
+          <button class="btn btn-outline-light ms-2" (click)="logout()">Logout</button>
+        </li>
+        } @else {
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/auth/login" routerLinkActive="active">Login</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/auth/register" routerLinkActive="active">Register</a>
+        </li>
+        }
+      </ul>
+    </div>
+  </div>
+</header>

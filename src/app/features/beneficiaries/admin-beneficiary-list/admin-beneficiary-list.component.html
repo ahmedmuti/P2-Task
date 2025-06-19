@@ -1,0 +1,136 @@
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h1 class="fw-bold">Manage Beneficiaries</h1>
+      <p class="text-muted">Admin dashboard for beneficiary management</p>
+    </div>
+    <div class="col-md-6 d-flex justify-content-md-end align-items-center">
+      <a routerLink="/admin/beneficiaries/add" class="btn btn-primary">
+        <i class="material-icons me-2">add</i>
+        Add New Beneficiary
+      </a>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <span class="material-icons">search</span>
+            </span>
+            <input type="text" class="form-control" placeholder="Search beneficiaries..." [(ngModel)]="searchTerm"
+              (input)="onSearchChange()" />
+            <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()" *ngIf="searchTerm">
+              <span class="material-icons">close</span>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex justify-content-md-end">
+            <div class="btn-group">
+              <button type="button" class="btn btn-outline-primary" [ngClass]="{'active': sortField === 'name'}"
+                (click)="sortBy('name')">
+                Name
+                <span class="material-icons ms-1 small" *ngIf="sortField === 'name'">
+                  {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </span>
+              </button>
+              <button type="button" class="btn btn-outline-primary" [ngClass]="{'active': sortField === 'budget'}"
+                (click)="sortBy('budget')">
+                Budget
+                <span class="material-icons ms-1 small" *ngIf="sortField === 'budget'">
+                  {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </span>
+              </button>
+              <button type="button" class="btn btn-outline-primary" [ngClass]="{'active': sortField === 'power'}"
+                (click)="sortBy('power')">
+                Power
+                <span class="material-icons ms-1 small" *ngIf="sortField === 'power'">
+                  {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center my-5" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <div *ngIf="!loading">
+    <div class="alert alert-info text-center py-5" role="alert" *ngIf="beneficiaries.length === 0">
+      <span class="material-icons d-block mb-3" style="font-size: 3rem;">search_off</span>
+      <h4>No beneficiaries found</h4>
+      <p class="mb-0">Try adjusting your search criteria</p>
+    </div>
+    <div *ngIf="beneficiaries.length > 0">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Budget</th>
+              <th>Power</th>
+              <th>Status</th>
+              <th>Rating</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let beneficiary of beneficiaries; trackBy: trackById">
+              <td>{{ beneficiary.name }}</td>
+              <td>{{ beneficiary.email }}</td>
+              <td>${{ beneficiary.budget | number:'1.0-0' }}</td>
+              <td>{{ beneficiary.power }}%</td>
+              <td>
+                <span class="badge rounded-pill" [ngClass]="beneficiary.isApproved ? 'bg-success' : 'bg-warning'">
+                  {{ beneficiary.isApproved ? 'Approved' : 'Pending' }}
+                </span>
+              </td>
+              <td>
+                <div class="d-flex align-items-center" *ngIf="beneficiary.averageRating > 0">
+                  <span class="material-icons text-warning me-1" style="font-size: 1rem;">star</span>
+                  <span>{{ beneficiary.averageRating | number:'1.1-1' }}</span>
+                </div>
+                <span class="text-muted" *ngIf="beneficiary.averageRating <= 0">Not rated</span>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <a [routerLink]="['/beneficiaries', beneficiary.id]" class="btn btn-sm btn-outline-primary me-2"
+                    title="View Details">
+                    <span class="material-icons">visibility</span>
+                  </a>
+
+                  <button class="btn btn-sm btn-outline-success" title="Approve Beneficiary"
+                    (click)="approveBeneficiary(beneficiary.id)" [disabled]="approvingId === beneficiary.id"
+                    *ngIf="!beneficiary.isApproved">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                      *ngIf="approvingId === beneficiary.id"></span>
+                    <span class="material-icons" *ngIf="approvingId !== beneficiary.id">check_circle</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination -->
+      <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <li class="page-item" [class.active]="currentPage === page" *ngFor="let page of paginationPages">
+              <a class="page-link" href="#" (click)="goToPage(page, $event)">{{ page }}</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
